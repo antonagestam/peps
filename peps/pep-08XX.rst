@@ -82,7 +82,7 @@ Specification
 The ``.days``, ``.seconds``, and ``.microseconds`` attributes of
 ``datetime.timedelta`` will be scheduled for deprecation.
 
-The datetime module ocumentation will be updated to recommend
+The datetime module documentation will be updated to recommend
 ``.total_seconds()`` for total duration, and arithmetic division with
 ``timedelta`` objects for unit extraction in cases where exact backwards
 compatibility is required.
