@@ -13,10 +13,14 @@ This PEP proposes the deprecation and eventual removal of the ``.days``,
 ``.seconds``, and ``.microseconds`` attributes from ``datetime.timedelta``
 objects. These attributes expose broken-down, partial pieces of a time
 difference, and are a frequent source of bugs for users who mistake them
-for unit representations of the total duration. We propose that these attributes
-be phased out entirely. Users should instead rely on direct arithmetic with
-``timedelta`` objects to extract specific components, eliminating the need to
-expose leaked implementation details.
+for unit representations of the total duration. This PEP proposes that these attributes
+be phased out entirely.
+
+The part attributes are in practice rarely semantically the correct values to
+use, and tend to cause subtle bugs. In the few cases where they are correctly
+used, users should instead rely on direct arithmetic with ``timedelta`` objects
+to extract specific components, eliminating the need to expose the
+implementation detail of ``timedelta`` internal representation.
 
 
 Motivation
@@ -75,22 +79,21 @@ having to design new attributes.
 Specification
 =============
 
-1. The ``.days``, ``.seconds``, and ``.microseconds`` attributes of
-   ``datetime.timedelta`` will be scheduled for deprecation.
+The ``.days``, ``.seconds``, and ``.microseconds`` attributes of
+``datetime.timedelta`` will be scheduled for deprecation.
 
-2. A long-term transition plan will be enacted:
-   * **Phase 1 (Initial 5 years):** The properties will be decorated with
-     ``@deprecated`` (e.g. ``@deprecated("Use timedelta arithmetic instead", category=None)``)
-     to provide silent warnings that linters, type checkers, and IDEs can
-     catch and flag to users well ahead of time.
-   * **Phase 2 (Subsequent 5 years):** The deprecation category will be
-     upgraded to trigger a runtime ``DeprecationWarning``.
-   * **Phase 3:** The attributes can be removed completely, in accordance
-     with the backwards compatibility policy outlined in PEP 387.
+The datetime module ocumentation will be updated to recommend
+``.total_seconds()`` for total duration, and arithmetic division with
+``timedelta`` objects for unit extraction in cases where exact backwards
+compatibility is required.
 
-3. Official documentation will be updated to recommend ``.total_seconds()``
-   for total duration, and arithmetic division with ``timedelta`` objects
-   for unit extraction.
+The ``.days``, ``.seconds``, and ``.microseconds`` attributes will be decorated
+with ``@deprecated`` in typeshed. Their implementations will be renamed and
+hidden and instead properties that trigger a ``DeprecationWarning`` will be
+exposed.
+
+In accordance with the backwards compatibility policy outlined in PEP 387, the
+properties can later be removed after a 10 year deprecation period has passed.
 
 
 Backwards Compatibility
